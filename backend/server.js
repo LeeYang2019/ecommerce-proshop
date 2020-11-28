@@ -5,6 +5,7 @@ import colors from 'colors';
 
 //import routes
 import productRoutes from './routes/productRoutes.js';
+import userRoutes from './routes/userRoutes.js';
 
 //load environment variables
 dotenv.config();
@@ -14,12 +15,15 @@ connectDB();
 
 const app = express();
 
+app.use(express.json());
+
 app.get('/', (req, res) => {
 	res.send('API is running...');
 });
 
 //mount routes
 app.use('/api/products', productRoutes);
+app.use('/api/users', userRoutes);
 
 const PORT = process.env.PORT || 5000;
 

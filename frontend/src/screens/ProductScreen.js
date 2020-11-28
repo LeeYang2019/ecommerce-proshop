@@ -93,6 +93,7 @@ const ProductScreen = ({ history, match }) => {
 													onChange={(e) => setQty(e.target.value)}
 												>
 													{[...Array(product.countInStock).keys()].map((x) => (
+														//create x # of options
 														<option key={x + 1} value={x + 1}>
 															{x + 1}
 														</option>
@@ -110,7 +111,7 @@ const ProductScreen = ({ history, match }) => {
 										type="button"
 										disabled={product.countInStock === 0}
 									>
-										Add to Card
+										Add to Cart
 									</Button>
 								</ListGroup.Item>
 							</ListGroup>
