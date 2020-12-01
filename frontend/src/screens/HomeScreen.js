@@ -11,14 +11,16 @@ const HomeScreen = () => {
 
 	const productList = useSelector((state) => state.productList);
 	const { loading, error, products } = productList;
-	console.log(products);
+	console.log('called1');
 
 	useEffect(() => {
+		console.log('called');
 		dispatch(listProducts());
 	}, [dispatch]);
 
 	return (
 		<>
+			{console.log('rendering')}
 			<h1>Latest Products</h1>
 			{loading ? (
 				<Loader />

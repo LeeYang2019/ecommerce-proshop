@@ -8,6 +8,7 @@ import User from '../models/userModel.js';
 export const authUser = asyncHandler(async (req, res) => {
 	const { email, password } = req.body;
 
+	//return user by email
 	const user = await User.findOne({ email });
 
 	//matches enteredPassword with db user password
@@ -76,5 +77,36 @@ export const getUserProfile = asyncHandler(async (req, res) => {
 	} else {
 		res.status(401); //unauthorized
 		throw new Error('Invalid email or password');
+	}
+});
+
+// @desc    Update user profile
+// @route   PUT /api/users/profile
+// @access  private
+export const updateUserProfile = asyncHandler(async (req, res) => {
+	//auth middleware passes user here
+	const user = await User.findById(req.user._id);
+
+	//matches enteredPassword with db user password
+	if (user) {
+		user.name = req.body.name || user.name;
+		user.email = req.body.email || user.email;
+
+		if (req.body.password) {
+			user.password = req.body.password;
+		}
+
+		const updatedUser = await user.save();
+
+		res.json({
+			_id: updatedUser._id,
+			name: updatedUser.name,
+			email: updatedUser.email,
+			isAdmin: updatedUser.isAdmin,
+			token: generateToken(updatedUser._id),
+		});
+	} else {
+		res.status(401); //unauthorized
+		throw new Error('user not found');
 	}
 });
