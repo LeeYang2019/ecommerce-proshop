@@ -12,7 +12,11 @@ import {
 	USER_UPDATE_PROFILE_REQUEST,
 	USER_UPDATE_PROFILE_SUCCESS,
 	USER_UPDATE_PROFILE_FAIL,
-	USER_UPDATE_PROFILE_RESET,
+	// USER_UPDATE_PROFILE_RESET,
+	USER_LIST_REQUEST,
+	USER_LIST_SUCCESS,
+	USER_LIST_FAIL,
+	USER_LIST_RESET,
 } from '../constants/userContants';
 
 //user list reducer
@@ -72,6 +76,26 @@ export const userUpdateProfileReducer = (state = { user: {} }, action) => {
 		case USER_UPDATE_PROFILE_FAIL:
 			console.log('c');
 			return { loading: false, error: action.payload };
+		default:
+			console.log('d');
+			return state;
+	}
+};
+
+export const userListReducer = (state = { users: [] }, action) => {
+	switch (action.type) {
+		case USER_LIST_REQUEST:
+			console.log('a');
+			return { ...state, loading: true };
+		case USER_LIST_SUCCESS:
+			console.log('b');
+			return { loading: false, users: action.payload };
+		case USER_LIST_FAIL:
+			console.log('c');
+			return { loading: false, error: action.payload };
+		case USER_LIST_RESET:
+			console.log('c');
+			return { users: [] };
 		default:
 			console.log('d');
 			return state;

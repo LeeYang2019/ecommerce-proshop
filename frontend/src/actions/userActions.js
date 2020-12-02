@@ -13,6 +13,10 @@ import {
 	USER_UPDATE_PROFILE_REQUEST,
 	USER_UPDATE_PROFILE_SUCCESS,
 	USER_UPDATE_PROFILE_FAIL,
+	USER_LIST_REQUEST,
+	USER_LIST_SUCCESS,
+	USER_LIST_FAIL,
+	USER_LIST_RESET,
 } from '../constants/userContants';
 
 export const login = (email, password) => async (dispatch) => {
@@ -54,6 +58,7 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
 	localStorage.removeItem('userInfo');
 	dispatch({ type: USER_LOGOUT });
+	dispatch({ type: USER_LIST_RESET });
 };
 
 export const register = (name, email, password) => async (dispatch) => {
@@ -179,6 +184,44 @@ export const updateUserProfile = (user) => async (dispatch, getState) => {
 		}
 		dispatch({
 			type: USER_UPDATE_PROFILE_FAIL,
+			payload: message,
+		});
+	}
+};
+
+export const listUsers = () => async (dispatch, getState) => {
+	try {
+		dispatch({
+			type: USER_LIST_REQUEST,
+		});
+		console.log('here');
+		const {
+			userLogin: { userInfo },
+		} = getState();
+		console.log(userInfo);
+		console.log('here again');
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		};
+		console.log('here again again');
+		const { data } = await axios.get(`/api/users`, config);
+		console.log(data);
+		dispatch({
+			type: USER_LIST_SUCCESS,
+			payload: data,
+		});
+	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message;
+		if (message === 'Not authorized, token failed') {
+			dispatch(logout());
+		}
+		dispatch({
+			type: USER_LIST_FAIL,
 			payload: message,
 		});
 	}
