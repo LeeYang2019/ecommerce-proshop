@@ -12,7 +12,7 @@ import ProfileScreen from './screens/ProfileScreen';
 import UserListScreen from './screens/ListScreen';
 import ShippingScreen from './screens/ShippingScreen';
 import PaymentScreen from './screens/PaymentMethodScreen';
-import PlaceOrderScreen from './screens/PlaceOrder';
+import PlaceOrderScreen from './screens/PlaceOrderScreen';
 
 const App = () => {
 	return (

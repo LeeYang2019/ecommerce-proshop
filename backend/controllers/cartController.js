@@ -5,6 +5,7 @@ import Order from '../models/orderModel.js';
 // @route   POST /api/orders
 // @access  private
 export const addOrderItems = asyncHandler(async (req, res) => {
+	console.log('inside order controller route');
 	const {
 		orderItems,
 		shippingAddress,
@@ -33,5 +34,22 @@ export const addOrderItems = asyncHandler(async (req, res) => {
 		const createdOrder = await order.save();
 
 		res.status(201).json(createdOrder);
+	}
+});
+
+// @desc    GET order by id
+// @route   GET /api/orders/:id
+// @access  private
+export const getOrderById = asyncHandler(async (req, res) => {
+	const order = await Order.findById(req.params.id).populate(
+		'user',
+		'name email'
+	);
+
+	if (order) {
+		res.json(order);
+	} else {
+		res.status(404);
+		throw new Error('Order not found');
 	}
 });
