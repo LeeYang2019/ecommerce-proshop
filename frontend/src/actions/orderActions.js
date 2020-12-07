@@ -6,6 +6,13 @@ import {
 	ORDER_DETAILS_REQUEST,
 	ORDER_DETAILS_SUCCESS,
 	ORDER_DETAILS_FAIL,
+	ORDER_PAY_REQUEST,
+	ORDER_PAY_SUCCESS,
+	ORDER_PAY_FAIL,
+	ORDER_PAY_RESET,
+	ORDER_LIST_MY_REQUEST,
+	ORDER_LIST_MY_SUCCESS,
+	ORDER_LIST_MY_FAIL,
 } from '../constants/orderConstants';
 
 export const createOrder = (order) => async (dispatch, getState) => {
@@ -76,6 +83,92 @@ export const getOrderDetails = (id) => async (dispatch, getState) => {
 
 		dispatch({
 			type: ORDER_DETAILS_FAIL,
+			payload: message,
+		});
+	}
+};
+
+export const payOrder = (orderId, paymentResult) => async (
+	dispatch,
+	getState
+) => {
+	console.log('inside payOrder');
+	try {
+		dispatch({
+			type: ORDER_PAY_REQUEST,
+		});
+
+		const {
+			userLogin: { userInfo },
+		} = getState();
+
+		console.log(userInfo);
+		const config = {
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		};
+		console.log('hello inside payOrder');
+
+		const { data } = await axios.put(
+			`/api/orders/${orderId}/pay`,
+			paymentResult,
+			config
+		);
+
+		console.log(data);
+
+		dispatch({
+			type: ORDER_PAY_SUCCESS,
+			payload: data,
+		});
+	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message;
+
+		dispatch({
+			type: ORDER_PAY_FAIL,
+			payload: message,
+		});
+	}
+};
+
+export const listMyOrders = () => async (dispatch, getState) => {
+	console.log('inside listMyOrders');
+	try {
+		dispatch({
+			type: ORDER_LIST_MY_REQUEST,
+		});
+
+		const {
+			userLogin: { userInfo },
+		} = getState();
+
+		const config = {
+			headers: {
+				Authorization: `Bearer ${userInfo.token}`,
+			},
+		};
+
+		const { data } = await axios.get(`/api/orders/myorders`, config);
+
+		console.log(data);
+
+		dispatch({
+			type: ORDER_LIST_MY_SUCCESS,
+			payload: data,
+		});
+	} catch (error) {
+		const message =
+			error.response && error.response.data.message
+				? error.response.data.message
+				: error.message;
+
+		dispatch({
+			type: ORDER_LIST_MY_FAIL,
 			payload: message,
 		});
 	}
