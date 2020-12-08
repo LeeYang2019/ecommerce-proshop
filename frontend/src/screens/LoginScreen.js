@@ -30,9 +30,6 @@ const LoginScreen = ({ location, history }) => {
 		dispatch(login(email, password));
 	};
 
-	console.log(error);
-	console.log(loading);
-
 	return (
 		<FormContainer>
 			<h1>Sign In</h1>

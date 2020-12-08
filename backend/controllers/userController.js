@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import generateToken from '../utils/generateToken.js';
 import User from '../models/userModel.js';
+import e from 'express';
 
 // @desc    Authenticate user
 // @route   POST /api/users/login
@@ -117,4 +118,60 @@ export const updateUserProfile = asyncHandler(async (req, res) => {
 export const getUsers = asyncHandler(async (req, res) => {
 	const users = await User.find({});
 	res.json(users);
+});
+
+// @desc	Get a user by id
+// @route	GET /api/users/:id
+// @access	Private/Admin
+export const getUserById = asyncHandler(async (req, res) => {
+	//send everything back minus the password
+	const user = await User.findById(req.params.id).select('-password');
+	if (user) {
+		res.json(user);
+	} else {
+		res.status(404);
+		throw new Error('User not found');
+	}
+});
+
+// @desc	Get all users
+// @route	GET /api/users/:id
+// @access	Private/Admin
+export const deleteUser = asyncHandler(async (req, res) => {
+	console.log('code enters here');
+	const user = await User.findById(req.params.id);
+	if (user) {
+		await user.remove();
+		res.json({ message: 'User removed' });
+	} else {
+		res.status(404);
+		throw new Error('User not found');
+	}
+});
+
+// @desc    Update user profile
+// @route   PUT /api/users/:id
+// @access  private/admin
+export const updateUser = asyncHandler(async (req, res) => {
+	//auth middleware passes user here
+	const user = await User.findById(req.params.id);
+
+	//matches enteredPassword with db user password
+	if (user) {
+		user.name = req.body.name || user.name;
+		user.email = req.body.email || user.email;
+		user.isAdmin = req.body.isAdmin;
+
+		const updatedUser = await user.save();
+
+		res.json({
+			_id: updatedUser._id,
+			name: updatedUser.name,
+			email: updatedUser.email,
+			isAdmin: updatedUser.isAdmin,
+		});
+	} else {
+		res.status(401); //unauthorized
+		throw new Error('user not found');
+	}
 });

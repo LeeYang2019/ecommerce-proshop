@@ -4,7 +4,7 @@ import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message.js';
 import Loader from '../components/Loader.js';
-import { listUsers } from '../actions/userActions';
+import { listUsers, deleteUser } from '../actions/userActions';
 
 const ListScreen = ({ history }) => {
 	const dispatch = useDispatch();
@@ -14,18 +14,24 @@ const ListScreen = ({ history }) => {
 	const userLogin = useSelector((state) => state.userLogin);
 	const { userInfo } = userLogin;
 
+	const userDelete = useSelector((state) => state.userDelete);
+	const { success: successDelete } = userDelete;
+
 	console.log(users);
 
 	useEffect(() => {
+		//if userInfo exists and the user is an admin
 		if (userInfo && userInfo.isAdmin) {
 			dispatch(listUsers());
 		} else {
-			history.push('/login');
+			history.push('/login'); //redirect to login
 		}
-	}, [dispatch, history, userInfo]);
+	}, [dispatch, history, userInfo, successDelete]);
 
 	const deleteHandler = (id) => {
-		console.log('delete');
+		if (window.confirm('Are you sure?')) {
+			dispatch(deleteUser(id));
+		}
 	};
 
 	return (
