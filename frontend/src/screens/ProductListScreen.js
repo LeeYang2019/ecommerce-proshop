@@ -38,7 +38,7 @@ const ProductListScreen = ({ match, history }) => {
 		dispatch({ type: PRODUCT_CREATE_RESET });
 
 		//if userInfo exists and the user is an admin
-		if (!userInfo.isAdmin) {
+		if (userInfo && !userInfo.isAdmin) {
 			history.push('/login'); //redirect to login
 		}
 		if (successCreate) {
