@@ -55,6 +55,7 @@ const ProductScreen = ({ history, match }) => {
 	const submitHandler = (e) => {
 		e.preventDefault();
 		dispatch(
+			//get the productid
 			createProductReview(match.params.id, {
 				rating,
 				comment,

@@ -24,6 +24,7 @@ export const cartReducer = (
 			} else {
 				return {
 					...state,
+					//add to array if not exist
 					cartItems: [...state.cartItems, item],
 				};
 			}

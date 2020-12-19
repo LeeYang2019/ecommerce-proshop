@@ -32,8 +32,6 @@ const UserEditScreen = ({ match, history }) => {
 	const userRegister = useSelector((state) => state.userRegister);
 	const { userInfo } = userRegister;
 
-	console.log(userInfo);
-
 	useEffect(() => {
 		if (successUpdate) {
 			dispatch({ type: USER_UPDATE_RESET });
