@@ -6,6 +6,9 @@ import { addOrderItems } from './cartController.js';
 // @route   GET /api/products
 // @access  public
 export const getProducts = asyncHandler(async (req, res) => {
+	const pageSize = 2;
+	const page = Number(req.query.pageNumber) || 1;
+
 	//get search params after ?
 	const keyword = req.query.keyword
 		? {
@@ -16,9 +19,13 @@ export const getProducts = asyncHandler(async (req, res) => {
 		  }
 		: {}; // have name or is empty
 
+	const count = await Product.countDocuments({ ...keyword });
 	//spread contents of object
-	const products = await Product.find({ ...keyword });
-	res.json(products);
+	const products = await Product.find({ ...keyword })
+		.limit(pageSize)
+		.skip(pageSize * (page - 1));
+
+	res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @desc    Get product by id
